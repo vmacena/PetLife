@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity() {
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
+        supportActionBar?.subtitle = "SC3034518"
         supportActionBar?.title = getString(R.string.app_name)
 
         pet = Pet(
