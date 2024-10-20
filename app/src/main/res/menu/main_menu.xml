@@ -17,4 +17,10 @@
         android:title="Edit Vaccination"
         android:orderInCategory="100"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/editLastVisitPetshop"
+        android:title="Edit Last Visit Petshop"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
 </menu>
