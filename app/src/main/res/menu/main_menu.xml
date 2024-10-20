@@ -7,8 +7,8 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/careInfo"
-        android:title="Care Info"
+        android:id="@+id/editVetVisit"
+        android:title="Edit Vet Visit"
         android:orderInCategory="100"
         app:showAsAction="never" />
 </menu>
