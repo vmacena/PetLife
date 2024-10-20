@@ -3,9 +3,12 @@ package com.macena.petlife
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import com.macena.petlife.model.Pet
 import com.macena.petlife.util.parcelable
 
@@ -17,19 +20,45 @@ class EditPetActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_pet)
 
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.title = "Edit Pet"
+
         pet = intent.parcelable("pet")!!
 
-        val nameEditText = findViewById<EditText>(R.id.editPetName)
-        val colorEditText = findViewById<EditText>(R.id.editPetColor)
-        val sizeEditText = findViewById<EditText>(R.id.editPetSize)
-        nameEditText.setText(pet.name)
-        colorEditText.setText(pet.color)
-        sizeEditText.setText(pet.size)
+        val editPetName: EditText = findViewById(R.id.editPetName)
+        val editPetBirthDate: EditText = findViewById(R.id.editPetBirthDate)
+        val editPetColor: EditText = findViewById(R.id.editPetColor)
+        val editPetSize: EditText = findViewById(R.id.editPetSize)
+        val editPetTypeSpinner: Spinner = findViewById(R.id.editPetTypeSpinner)
+        val saveButton: Button = findViewById(R.id.saveButton)
 
-        findViewById<Button>(R.id.saveButton).setOnClickListener {
-            pet.name = nameEditText.text.toString()
-            pet.color = colorEditText.text.toString()
-            pet.size = sizeEditText.text.toString()
+        editPetName.setText(pet.name)
+        editPetBirthDate.setText(pet.birthDate)
+        editPetColor.setText(pet.color)
+        editPetSize.setText(pet.size)
+
+        ArrayAdapter.createFromResource(
+            this,
+            R.array.pet_types,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            editPetTypeSpinner.adapter = adapter
+        }
+
+        val petTypes = resources.getStringArray(R.array.pet_types)
+        val petTypeIndex = petTypes.indexOf(pet.type)
+        if (petTypeIndex >= 0) {
+            editPetTypeSpinner.setSelection(petTypeIndex)
+        }
+
+        saveButton.setOnClickListener {
+            pet.name = editPetName.text.toString()
+            pet.birthDate = editPetBirthDate.text.toString()
+            pet.color = editPetColor.text.toString()
+            pet.size = editPetSize.text.toString()
+            pet.type = editPetTypeSpinner.selectedItem.toString()
 
             val resultIntent = Intent()
             resultIntent.putExtra("pet", pet)
