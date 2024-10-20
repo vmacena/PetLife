@@ -11,6 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
+        android:title="@string/app_name"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -18,8 +19,9 @@
 
     <TextView
         android:id="@+id/petName"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="16dp"
         android:text="Name"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,8 +29,9 @@
 
     <TextView
         android:id="@+id/petBirthDate"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="16dp"
         android:text="Birth Date"
         app:layout_constraintTop_toBottomOf="@id/petName"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,16 +39,19 @@
 
     <Spinner
         android:id="@+id/petTypeSpinner"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:enabled="false"
         app:layout_constraintTop_toBottomOf="@id/petBirthDate"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/petColor"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="16dp"
         android:text="Color"
         app:layout_constraintTop_toBottomOf="@id/petTypeSpinner"
         app:layout_constraintStart_toStartOf="parent"
@@ -53,8 +59,9 @@
 
     <TextView
         android:id="@+id/petSize"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="16dp"
         android:text="Size"
         app:layout_constraintTop_toBottomOf="@id/petColor"
         app:layout_constraintStart_toStartOf="parent"
@@ -62,8 +69,9 @@
 
     <TextView
         android:id="@+id/lastVetVisit"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="16dp"
         android:text="Last Vet Visit"
         app:layout_constraintTop_toBottomOf="@id/petSize"
         app:layout_constraintStart_toStartOf="parent"
@@ -71,8 +79,9 @@
 
     <TextView
         android:id="@+id/lastVaccination"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="16dp"
         android:text="Last Vaccination"
         app:layout_constraintTop_toBottomOf="@id/lastVetVisit"
         app:layout_constraintStart_toStartOf="parent"
@@ -80,8 +89,9 @@
 
     <TextView
         android:id="@+id/lastPetShopVisit"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="16dp"
         android:text="Last Pet Shop Visit"
         app:layout_constraintTop_toBottomOf="@id/lastVaccination"
         app:layout_constraintStart_toStartOf="parent"
