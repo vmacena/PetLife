@@ -11,4 +11,10 @@
         android:title="Edit Vet Visit"
         android:orderInCategory="100"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/editVaccination"
+        android:title="Edit Vaccination"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
 </menu>
