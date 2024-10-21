@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var editPetLauncher: ActivityResultLauncher<Intent>
     private lateinit var editVetVisitLauncher: ActivityResultLauncher<Intent>
     private lateinit var editVaccinationLauncher: ActivityResultLauncher<Intent>
+    private lateinit var editPetShopVisitLauncher: ActivityResultLauncher<Intent>
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,6 +80,14 @@ class MainActivity : AppCompatActivity() {
                 displayPetInfo()
             }
         }
+
+        editPetShopVisitLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val data: Intent? = result.data
+                pet.lastPetShopVisit = data?.getStringExtra("lastPetShopVisit") ?: pet.lastPetShopVisit
+                displayPetInfo()
+            }
+        }
     }
 
     private fun displayPetInfo() {
@@ -114,6 +123,12 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this, EditVaccinationActivity::class.java)
                 intent.putExtra("lastVaccination", pet.lastVaccination)
                 editVaccinationLauncher.launch(intent)
+                return true
+            }
+            R.id.editLastVisitPetshop -> {
+                val intent = Intent(this, EditPetShopVisitActivity::class.java)
+                intent.putExtra("lastPetShopVisit", pet.lastPetShopVisit)
+                editPetShopVisitLauncher.launch(intent)
                 return true
             }
         }
