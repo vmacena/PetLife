@@ -98,6 +98,13 @@ class MainActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.lastVetVisit).text = pet.lastVetVisit
         findViewById<TextView>(R.id.lastVaccination).text = pet.lastVaccination
         findViewById<TextView>(R.id.lastPetShopVisit).text = pet.lastPetShopVisit
+
+        val petTypeSpinner: Spinner = findViewById(R.id.petTypeSpinner)
+        val petTypes = resources.getStringArray(R.array.pet_types)
+        val petTypeIndex = petTypes.indexOf(pet.type)
+        if (petTypeIndex >= 0) {
+            petTypeSpinner.setSelection(petTypeIndex)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
