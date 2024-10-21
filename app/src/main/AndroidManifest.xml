@@ -23,6 +23,7 @@
         </activity>
 
         <activity android:name=".EditPetActivity" />
+        <activity android:name=".EditVetVisitActivity" />
 
     </application>
 
