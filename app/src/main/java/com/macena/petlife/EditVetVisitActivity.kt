@@ -20,7 +20,7 @@ class EditVetVisitActivity : AppCompatActivity() {
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.title = "Edit Pet"
+        supportActionBar?.title = "Edit Vet Visit"
 
         editVetVisitDate = findViewById(R.id.editVetVisitDate)
         val saveButton: Button = findViewById(R.id.saveVetVisitButton)
