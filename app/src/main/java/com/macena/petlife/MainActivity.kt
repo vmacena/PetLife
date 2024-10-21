@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var pet: Pet
     private lateinit var editPetLauncher: ActivityResultLauncher<Intent>
+    private lateinit var editVetVisitLauncher: ActivityResultLauncher<Intent>
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,6 +62,14 @@ class MainActivity : AppCompatActivity() {
                 displayPetInfo()
             }
         }
+
+        editVetVisitLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val data: Intent? = result.data
+                pet.lastVetVisit = data?.getStringExtra("lastVetVisit") ?: pet.lastVetVisit
+                displayPetInfo()
+            }
+        }
     }
 
     private fun displayPetInfo() {
@@ -86,16 +95,14 @@ class MainActivity : AppCompatActivity() {
                 editPetLauncher.launch(intent)
                 return true
             }
+            R.id.editVetVisit -> {
+                val intent = Intent(this, EditVetVisitActivity::class.java)
+                intent.putExtra("lastVetVisit", pet.lastVetVisit)
+                editVetVisitLauncher.launch(intent)
+                return true
+            }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_EDIT_PET && resultCode == RESULT_OK) {
-            pet = data?.parcelable("pet")!!
-            displayPetInfo()
-        }
     }
 
     companion object {
