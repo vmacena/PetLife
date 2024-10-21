@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 
 class EditPetShopVisitActivity : AppCompatActivity() {
 
@@ -16,6 +17,10 @@ class EditPetShopVisitActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_pet_shop_visit)
+
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.title = "Edit Last Pet Shop Visit"
 
         editPetShopVisitDate = findViewById(R.id.editPetShopVisitDate)
         val saveButton: Button = findViewById(R.id.savePetShopVisitButton)
