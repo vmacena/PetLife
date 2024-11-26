@@ -1,17 +1,15 @@
 package com.macena.petlife
 
-import android.annotation.SuppressLint
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ArrayAdapter
-import android.widget.Spinner
-import android.widget.TextView
-import androidx.appcompat.widget.Toolbar
+import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import com.macena.petlife.model.Pet
 import com.macena.petlife.util.parcelable
 
@@ -19,11 +17,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var pet: Pet
     private lateinit var editPetLauncher: ActivityResultLauncher<Intent>
-    private lateinit var editVetVisitLauncher: ActivityResultLauncher<Intent>
-    private lateinit var editVaccinationLauncher: ActivityResultLauncher<Intent>
-    private lateinit var editPetShopVisitLauncher: ActivityResultLauncher<Intent>
 
-    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -42,6 +36,7 @@ class MainActivity : AppCompatActivity() {
             "05/06/2024",
             "05/06/2024",
             "18/09/2024",
+            "https://br.freepik.com/fotos-gratis/close-up-de-um-cao-sentando-branco-fundo_2610789.htm#fromView=keyword&page=1&position=2&uuid=563d291f-8acd-4c31-86c1-586d67941bc4"
         )
 
         displayPetInfo()
@@ -65,27 +60,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        editVetVisitLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK) {
-                val data: Intent? = result.data
-                pet.lastVetVisit = data?.getStringExtra("lastVetVisit") ?: pet.lastVetVisit
-                displayPetInfo()
-            }
-        }
-
-        editVaccinationLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK) {
-                val data: Intent? = result.data
-                pet.lastVaccination = data?.getStringExtra("lastVaccination") ?: pet.lastVaccination
-                displayPetInfo()
-            }
-        }
-
-        editPetShopVisitLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK) {
-                val data: Intent? = result.data
-                pet.lastPetShopVisit = data?.getStringExtra("lastPetShopVisit") ?: pet.lastPetShopVisit
-                displayPetInfo()
+        findViewById<Button>(R.id.viewPhotoButton).setOnClickListener {
+            pet.photoUrl?.let { photoUrl ->
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(photoUrl))
+                startActivity(intent)
             }
         }
     }
@@ -98,6 +76,7 @@ class MainActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.lastVetVisit).text = pet.lastVetVisit
         findViewById<TextView>(R.id.lastVaccination).text = pet.lastVaccination
         findViewById<TextView>(R.id.lastPetShopVisit).text = pet.lastPetShopVisit
+        findViewById<TextView>(R.id.photoUrl).text = pet.photoUrl
 
         val petTypeSpinner: Spinner = findViewById(R.id.petTypeSpinner)
         val petTypes = resources.getStringArray(R.array.pet_types)
@@ -120,29 +99,7 @@ class MainActivity : AppCompatActivity() {
                 editPetLauncher.launch(intent)
                 return true
             }
-            R.id.editVetVisit -> {
-                val intent = Intent(this, EditVetVisitActivity::class.java)
-                intent.putExtra("lastVetVisit", pet.lastVetVisit)
-                editVetVisitLauncher.launch(intent)
-                return true
-            }
-            R.id.editVaccination -> {
-                val intent = Intent(this, EditVaccinationActivity::class.java)
-                intent.putExtra("lastVaccination", pet.lastVaccination)
-                editVaccinationLauncher.launch(intent)
-                return true
-            }
-            R.id.editLastVisitPetshop -> {
-                val intent = Intent(this, EditPetShopVisitActivity::class.java)
-                intent.putExtra("lastPetShopVisit", pet.lastPetShopVisit)
-                editPetShopVisitLauncher.launch(intent)
-                return true
-            }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    companion object {
-        const val REQUEST_EDIT_PET = 1
     }
 }

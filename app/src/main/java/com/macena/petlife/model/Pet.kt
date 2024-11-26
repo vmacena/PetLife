@@ -11,7 +11,8 @@ data class Pet(
     var size: String,
     var lastVetVisit: String,
     var lastVaccination: String,
-    var lastPetShopVisit: String
+    var lastPetShopVisit: String,
+    var photoUrl: String? = null
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
@@ -21,7 +22,8 @@ data class Pet(
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
-        parcel.readString()!!
+        parcel.readString()!!,
+        parcel.readString()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -33,6 +35,7 @@ data class Pet(
         parcel.writeString(lastVetVisit)
         parcel.writeString(lastVaccination)
         parcel.writeString(lastPetShopVisit)
+        parcel.writeString(photoUrl)
     }
 
     override fun describeContents(): Int {

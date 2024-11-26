@@ -3,10 +3,7 @@ package com.macena.petlife
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Spinner
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.macena.petlife.model.Pet
@@ -15,6 +12,7 @@ import com.macena.petlife.util.parcelable
 class EditPetActivity : AppCompatActivity() {
 
     private lateinit var pet: Pet
+    private lateinit var photoUrlEditText: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,12 +29,14 @@ class EditPetActivity : AppCompatActivity() {
         val editPetColor: EditText = findViewById(R.id.editPetColor)
         val editPetSize: EditText = findViewById(R.id.editPetSize)
         val editPetTypeSpinner: Spinner = findViewById(R.id.editPetTypeSpinner)
+        photoUrlEditText = findViewById(R.id.photoUrlEditText)
         val saveButton: Button = findViewById(R.id.saveButton)
 
         editPetName.setText(pet.name)
         editPetBirthDate.setText(pet.birthDate)
         editPetColor.setText(pet.color)
         editPetSize.setText(pet.size)
+        photoUrlEditText.setText(pet.photoUrl)
 
         ArrayAdapter.createFromResource(
             this,
@@ -59,6 +59,7 @@ class EditPetActivity : AppCompatActivity() {
             pet.color = editPetColor.text.toString()
             pet.size = editPetSize.text.toString()
             pet.type = editPetTypeSpinner.selectedItem.toString()
+            pet.photoUrl = photoUrlEditText.text.toString()
 
             val resultIntent = Intent()
             resultIntent.putExtra("pet", pet)
