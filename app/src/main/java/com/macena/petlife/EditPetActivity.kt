@@ -29,14 +29,12 @@ class EditPetActivity : AppCompatActivity() {
         val editPetColor: EditText = findViewById(R.id.editPetColor)
         val editPetSize: EditText = findViewById(R.id.editPetSize)
         val editPetTypeSpinner: Spinner = findViewById(R.id.editPetTypeSpinner)
-        photoUrlEditText = findViewById(R.id.photoUrlEditText)
         val saveButton: Button = findViewById(R.id.saveButton)
 
         editPetName.setText(pet.name)
         editPetBirthDate.setText(pet.birthDate)
         editPetColor.setText(pet.color)
         editPetSize.setText(pet.size)
-        photoUrlEditText.setText(pet.photoUrl)
 
         ArrayAdapter.createFromResource(
             this,
@@ -59,7 +57,6 @@ class EditPetActivity : AppCompatActivity() {
             pet.color = editPetColor.text.toString()
             pet.size = editPetSize.text.toString()
             pet.type = editPetTypeSpinner.selectedItem.toString()
-            pet.photoUrl = photoUrlEditText.text.toString()
 
             val resultIntent = Intent()
             resultIntent.putExtra("pet", pet)

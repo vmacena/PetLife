@@ -36,8 +36,7 @@ class MainActivity : AppCompatActivity() {
             "05/06/2024",
             "05/06/2024",
             "18/09/2024",
-            "https://br.freepik.com/fotos-gratis/close-up-de-um-cao-sentando-branco-fundo_2610789.htm#fromView=keyword&page=1&position=2&uuid=563d291f-8acd-4c31-86c1-586d67941bc4"
-        )
+            )
 
         displayPetInfo()
 
@@ -59,13 +58,6 @@ class MainActivity : AppCompatActivity() {
                 displayPetInfo()
             }
         }
-
-        findViewById<Button>(R.id.viewPhotoButton).setOnClickListener {
-            pet.photoUrl?.let { photoUrl ->
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(photoUrl))
-                startActivity(intent)
-            }
-        }
     }
 
     private fun displayPetInfo() {
@@ -76,7 +68,6 @@ class MainActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.lastVetVisit).text = pet.lastVetVisit
         findViewById<TextView>(R.id.lastVaccination).text = pet.lastVaccination
         findViewById<TextView>(R.id.lastPetShopVisit).text = pet.lastPetShopVisit
-        findViewById<TextView>(R.id.photoUrl).text = pet.photoUrl
 
         val petTypeSpinner: Spinner = findViewById(R.id.petTypeSpinner)
         val petTypes = resources.getStringArray(R.array.pet_types)
