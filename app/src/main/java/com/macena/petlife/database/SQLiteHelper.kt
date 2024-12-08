@@ -12,12 +12,16 @@ class SQLiteHelper(context: Context) : SQLiteOpenHelper(
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(CREATE_PETS_TABLE)
+        db.execSQL(CREATE_EVENTS_TABLE)
     }
 
+
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_PETS")
+        db.execSQL("DROP TABLE IF EXISTS events")
+        db.execSQL("DROP TABLE IF EXISTS pets")
         onCreate(db)
     }
+
 
     fun getPets(): List<Pet> {
         val pets = mutableListOf<Pet>()
@@ -180,7 +184,7 @@ class SQLiteHelper(context: Context) : SQLiteOpenHelper(
 
     companion object {
         private const val DATABASE_NAME = "PetLife.db"
-        private const val DATABASE_VERSION = 1
+        private const val DATABASE_VERSION = 2
 
         const val TABLE_PETS = "pets"
         const val COLUMN_ID = "id"
@@ -194,5 +198,16 @@ class SQLiteHelper(context: Context) : SQLiteOpenHelper(
                 $COLUMN_TYPE TEXT NOT NULL
             )
         """
+
+        private const val CREATE_EVENTS_TABLE = """
+    CREATE TABLE events (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        pet_id INTEGER NOT NULL,
+        type TEXT NOT NULL,
+        date TEXT NOT NULL,
+        FOREIGN KEY(pet_id) REFERENCES pets(id)
+    )
+"""
+
     }
 }
