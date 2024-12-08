@@ -1,96 +1,59 @@
 package com.macena.petlife
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.widget.*
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import com.macena.petlife.model.Pet
-import com.macena.petlife.util.parcelable
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.macena.petlife.database.SQLiteHelper
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var pet: Pet
-    private lateinit var editPetLauncher: ActivityResultLauncher<Intent>
+    private lateinit var recyclerViewPets: RecyclerView
+    private lateinit var adapter: PetAdapter
+    private lateinit var dbHelper: SQLiteHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar?.subtitle = "SC3034518"
-        supportActionBar?.title = getString(R.string.app_name)
+        dbHelper = SQLiteHelper(this)
 
-        pet = Pet(
-            "Bob",
-            "08/03/2021",
-            "Dog",
-            "Gray",
-            "Big",
-            "05/06/2024",
-            "05/06/2024",
-            "18/09/2024",
-            )
+        recyclerViewPets = findViewById(R.id.recyclerViewPets)
+        recyclerViewPets.layoutManager = LinearLayoutManager(this)
 
-        displayPetInfo()
-
-        val petTypeSpinner: Spinner = findViewById(R.id.petTypeSpinner)
-        ArrayAdapter.createFromResource(
-            this,
-            R.array.pet_types,
-            android.R.layout.simple_spinner_item
-        ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            petTypeSpinner.adapter = adapter
+        if (dbHelper.getPets().isEmpty()) {
+            dbHelper.insertPet("Ted", "Dog")
+            dbHelper.insertPet("Cheddar", "Dog")
+            dbHelper.insertPet("Bacon", "Dog")
         }
-        petTypeSpinner.isEnabled = false
 
-        editPetLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK) {
-                val data: Intent? = result.data
-                pet = data?.parcelable("pet")!!
-                displayPetInfo()
-            }
-        }
+        reloadPets()
     }
 
-    private fun displayPetInfo() {
-        findViewById<TextView>(R.id.petName).text = pet.name
-        findViewById<TextView>(R.id.petBirthDate).text = pet.birthDate
-        findViewById<TextView>(R.id.petColor).text = pet.color
-        findViewById<TextView>(R.id.petSize).text = pet.size
-        findViewById<TextView>(R.id.lastVetVisit).text = pet.lastVetVisit
-        findViewById<TextView>(R.id.lastVaccination).text = pet.lastVaccination
-        findViewById<TextView>(R.id.lastPetShopVisit).text = pet.lastPetShopVisit
+    private fun reloadPets() {
+        val pets = dbHelper.getPets()
+        adapter = PetAdapter(pets)
 
-        val petTypeSpinner: Spinner = findViewById(R.id.petTypeSpinner)
-        val petTypes = resources.getStringArray(R.array.pet_types)
-        val petTypeIndex = petTypes.indexOf(pet.type)
-        if (petTypeIndex >= 0) {
-            petTypeSpinner.setSelection(petTypeIndex)
+        adapter.onEditClick = { pet ->
+            val intent = Intent(this, EditPetActivity::class.java)
+            intent.putExtra("PET_ID", pet.id)
+            startActivity(intent)
         }
-    }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.editPet -> {
-                val intent = Intent(this, EditPetActivity::class.java)
-                intent.putExtra("pet", pet)
-                editPetLauncher.launch(intent)
-                return true
-            }
+        adapter.onRemoveClick = { pet ->
+            dbHelper.deletePet(pet.id)
+            reloadPets()
         }
-        return super.onOptionsItemSelected(item)
+
+        adapter.onViewEventsClick = { pet ->
+            //android.util.Log.d("MainActivity", "Abrindo eventos para PET_ID: ${pet.id}")
+            val intent = Intent(this, PetEventsActivity::class.java)
+            intent.putExtra("PET_ID", pet.id)
+            startActivity(intent)
+        }
+
+
+        recyclerViewPets.adapter = adapter
     }
 }
