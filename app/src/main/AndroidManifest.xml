@@ -26,6 +26,10 @@
         <activity android:name=".EditVetVisitActivity" />
         <activity android:name=".EditVaccinationActivity" />
         <activity android:name=".EditPetShopVisitActivity" />
+        <activity android:name=".PetEventsActivity" />
+        <activity android:name=".EditEventActivity" />
+        <activity android:name=".EditPetEventActivity" />
+
 
     </application>
 
