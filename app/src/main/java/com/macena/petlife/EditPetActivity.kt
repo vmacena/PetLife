@@ -1,66 +1,56 @@
 package com.macena.petlife
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import com.macena.petlife.model.Pet
-import com.macena.petlife.util.parcelable
+import com.macena.petlife.database.SQLiteHelper
 
 class EditPetActivity : AppCompatActivity() {
 
-    private lateinit var pet: Pet
-    private lateinit var photoUrlEditText: EditText
+    private lateinit var editTextPetName: EditText
+    private lateinit var editTextPetType: EditText
+    private lateinit var buttonSavePet: Button
+    private lateinit var dbHelper: SQLiteHelper
+    private var petId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_pet)
 
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar?.title = "Edit Pet"
+        dbHelper = SQLiteHelper(this)
 
-        pet = intent.parcelable("pet")!!
+        editTextPetName = findViewById(R.id.editTextPetName)
+        editTextPetType = findViewById(R.id.editTextPetType)
+        buttonSavePet = findViewById(R.id.buttonSavePet)
 
-        val editPetName: EditText = findViewById(R.id.editPetName)
-        val editPetBirthDate: EditText = findViewById(R.id.editPetBirthDate)
-        val editPetColor: EditText = findViewById(R.id.editPetColor)
-        val editPetSize: EditText = findViewById(R.id.editPetSize)
-        val editPetTypeSpinner: Spinner = findViewById(R.id.editPetTypeSpinner)
-        val saveButton: Button = findViewById(R.id.saveButton)
+        petId = intent.getIntExtra("PET_ID", -1)
 
-        editPetName.setText(pet.name)
-        editPetBirthDate.setText(pet.birthDate)
-        editPetColor.setText(pet.color)
-        editPetSize.setText(pet.size)
-
-        ArrayAdapter.createFromResource(
-            this,
-            R.array.pet_types,
-            android.R.layout.simple_spinner_item
-        ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            editPetTypeSpinner.adapter = adapter
+        if (petId != -1) {
+            val pet = dbHelper.getPetById(petId)
+            if (pet != null) {
+                editTextPetName.setText(pet.name)
+                editTextPetType.setText(pet.type)
+            }
         }
 
-        val petTypes = resources.getStringArray(R.array.pet_types)
-        val petTypeIndex = petTypes.indexOf(pet.type)
-        if (petTypeIndex >= 0) {
-            editPetTypeSpinner.setSelection(petTypeIndex)
-        }
+        buttonSavePet.setOnClickListener {
+            val name = editTextPetName.text.toString()
+            val type = editTextPetType.text.toString()
 
-        saveButton.setOnClickListener {
-            pet.name = editPetName.text.toString()
-            pet.birthDate = editPetBirthDate.text.toString()
-            pet.color = editPetColor.text.toString()
-            pet.size = editPetSize.text.toString()
-            pet.type = editPetTypeSpinner.selectedItem.toString()
+            if (name.isBlank() || type.isBlank()) {
+                Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
-            val resultIntent = Intent()
-            resultIntent.putExtra("pet", pet)
-            setResult(Activity.RESULT_OK, resultIntent)
+            if (petId == -1) {
+                dbHelper.insertPet(name, type)
+            } else {
+                dbHelper.updatePet(petId, name, type)
+            }
+
+            Toast.makeText(this, "Pet saved!", Toast.LENGTH_SHORT).show()
             finish()
         }
     }
