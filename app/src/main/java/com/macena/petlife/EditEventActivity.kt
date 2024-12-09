@@ -11,6 +11,7 @@ class EditEventActivity : AppCompatActivity() {
 
     private lateinit var editTextEventType: EditText
     private lateinit var editTextEventDate: EditText
+    private lateinit var editTextEventTime: EditText
     private lateinit var buttonSaveEvent: Button
     private lateinit var dbHelper: SQLiteHelper
     private var eventId: Int = -1
@@ -24,6 +25,7 @@ class EditEventActivity : AppCompatActivity() {
 
         editTextEventType = findViewById(R.id.editTextEventType)
         editTextEventDate = findViewById(R.id.editTextEventDate)
+        editTextEventTime = findViewById(R.id.editTextEventTime)
         buttonSaveEvent = findViewById(R.id.buttonSaveEvent)
 
         eventId = intent.getIntExtra("EVENT_ID", -1)
@@ -34,23 +36,26 @@ class EditEventActivity : AppCompatActivity() {
             if (event != null) {
                 editTextEventType.setText(event.type)
                 editTextEventDate.setText(event.date)
+                editTextEventTime.setText(event.time)
             }
         }
 
         buttonSaveEvent.setOnClickListener {
             val type = editTextEventType.text.toString()
             val date = editTextEventDate.text.toString()
+            val time = editTextEventTime.text.toString()
 
-            if (type.isBlank() || date.isBlank()) {
+
+            if (type.isBlank() || date.isBlank() || time.isBlank()) {
                 Toast.makeText(this,
                     "Please fill all fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             if (eventId == -1) {
-                dbHelper.insertEvent(petId, type, date)
+                dbHelper.insertEvent(petId, type, date, time)
             } else {
-                dbHelper.updateEvent(eventId, type, date)
+                dbHelper.updateEvent(eventId, type, date, time)
             }
 
             Toast.makeText(this, "Event saved!", Toast.LENGTH_SHORT).show()

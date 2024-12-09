@@ -17,10 +17,11 @@ class SQLiteHelper(context: Context) : SQLiteOpenHelper(
 
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        if (oldVersion < 3) {
-            db.execSQL("ALTER TABLE pets ADD COLUMN birth_date TEXT NOT NULL DEFAULT ''")
-            db.execSQL("ALTER TABLE pets ADD COLUMN color TEXT NOT NULL DEFAULT ''")
-            db.execSQL("ALTER TABLE pets ADD COLUMN size TEXT NOT NULL DEFAULT ''")
+        if (oldVersion < 5) {
+//            db.execSQL("ALTER TABLE pets ADD COLUMN birth_date TEXT NOT NULL DEFAULT ''")
+//            db.execSQL("ALTER TABLE pets ADD COLUMN color TEXT NOT NULL DEFAULT ''")
+//            db.execSQL("ALTER TABLE pets ADD COLUMN size TEXT NOT NULL DEFAULT ''")
+            db.execSQL("ALTER TABLE events ADD COLUMN time TEXT NOT NULL DEFAULT ''")
         }
     }
 
@@ -121,7 +122,7 @@ class SQLiteHelper(context: Context) : SQLiteOpenHelper(
         val db = readableDatabase
         val cursor = db.query(
             "events",
-            arrayOf("id", "type", "date"),
+            arrayOf("id", "type", "date", "time"),
             "pet_id = ?",
             arrayOf(petId.toString()),
             null,
@@ -134,7 +135,8 @@ class SQLiteHelper(context: Context) : SQLiteOpenHelper(
                 val id = cursor.getInt(cursor.getColumnIndexOrThrow("id"))
                 val type = cursor.getString(cursor.getColumnIndexOrThrow("type"))
                 val date = cursor.getString(cursor.getColumnIndexOrThrow("date"))
-                events.add(Event(id, type, date))
+                val time = cursor.getString(cursor.getColumnIndexOrThrow("time"))
+                events.add(Event(id, type, date, time))
             }
             cursor.close()
         }
@@ -149,12 +151,13 @@ class SQLiteHelper(context: Context) : SQLiteOpenHelper(
         db.close()
     }
 
-    fun insertEvent(petId: Int, type: String, date: String): Long {
+    fun insertEvent(petId: Int, type: String, date: String, time: String): Long {
         val db = writableDatabase
         val values = ContentValues().apply {
             put("pet_id", petId)
             put("type", type)
             put("date", date)
+            put("time", time)
         }
         val id = db.insert("events", null, values)
         db.close()
@@ -165,7 +168,7 @@ class SQLiteHelper(context: Context) : SQLiteOpenHelper(
         val db = readableDatabase
         val cursor = db.query(
             "events",
-            arrayOf("id", "type", "date"),
+            arrayOf("id", "type", "date", "time"),
             "id = ?",
             arrayOf(eventId.toString()),
             null,
@@ -176,18 +179,21 @@ class SQLiteHelper(context: Context) : SQLiteOpenHelper(
         if (cursor != null && cursor.moveToFirst()) {
             val type = cursor.getString(cursor.getColumnIndexOrThrow("type"))
             val date = cursor.getString(cursor.getColumnIndexOrThrow("date"))
-            event = Event(eventId, type, date)
+            val time = cursor.getString(cursor.getColumnIndexOrThrow("time"))
+
+            event = Event(eventId, type, date, time)
             cursor.close()
         }
         db.close()
         return event
     }
 
-    fun updateEvent(eventId: Int, type: String, date: String): Int {
+    fun updateEvent(eventId: Int, type: String, date: String, time: String): Int {
         val db = writableDatabase
         val values = ContentValues().apply {
             put("type", type)
             put("date", date)
+            put("time", time)
         }
         val rows = db.update(
             "events", values,
@@ -198,7 +204,7 @@ class SQLiteHelper(context: Context) : SQLiteOpenHelper(
 
     companion object {
         private const val DATABASE_NAME = "PetLife.db"
-        private const val DATABASE_VERSION = 3
+        private const val DATABASE_VERSION = 5
 
         const val TABLE_PETS = "pets"
         const val COLUMN_ID = "id"
@@ -223,6 +229,7 @@ class SQLiteHelper(context: Context) : SQLiteOpenHelper(
         pet_id INTEGER NOT NULL,
         type TEXT NOT NULL,
         date TEXT NOT NULL,
+        time TEXT NOT NULL,
         FOREIGN KEY(pet_id) REFERENCES pets(id)
     )
 """

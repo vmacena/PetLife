@@ -1,5 +1,4 @@
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,10 +12,10 @@
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
         android:theme="?attr/actionBarTheme"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:title="Event Update"
         app:layout_constraintEnd_toEndOf="parent"
-        android:title="Editar Evento" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/editTextEventType"
@@ -24,9 +23,9 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:hint="Event Type"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <EditText
         android:id="@+id/editTextEventDate"
@@ -34,18 +33,30 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:hint="Event Date"
-        app:layout_constraintTop_toBottomOf="@id/editTextEventType"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/editTextEventType" />
+
+    <EditText
+        android:id="@+id/editTextEventTime"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_marginStart="16dp"
+        android:hint="Event Time"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.29" />
 
     <Button
         android:id="@+id/buttonSaveEvent"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Save"
-        app:layout_constraintTop_toBottomOf="@id/editTextEventDate"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editTextEventDate" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

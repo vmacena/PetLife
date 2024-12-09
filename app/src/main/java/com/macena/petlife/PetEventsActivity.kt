@@ -47,7 +47,7 @@ class PetEventsActivity : AppCompatActivity() {
 
     private fun reloadEvents() {
         events = dbHelper.getEventsByPetId(petId).toMutableList()
-        val eventNames = events.map { "${it.type} (${it.date})" }
+        val eventNames = events.map { "${it.type} (${it.date}) - (${it.time})" }
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, eventNames)
         listViewEvents.adapter = adapter
     }
@@ -69,8 +69,8 @@ class PetEventsActivity : AppCompatActivity() {
     ) {
         super.onCreateContextMenu(menu, v, menuInfo)
         if (v?.id == R.id.listViewEvents) {
-            menu?.add(0, 1, 0, "Editar")
-            menu?.add(0, 2, 1, "Excluir")
+            menu?.add(0, 1, 0, "Edit")
+            menu?.add(0, 2, 1, "Delete")
         }
     }
 

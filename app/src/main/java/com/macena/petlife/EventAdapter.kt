@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-data class Event(val id: Int, val type: String, val date: String)
+data class Event(val id: Int, val type: String, val date: String, val time: String)
 
 class EventAdapter(private val events: List<Event>) : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
 
@@ -16,6 +16,7 @@ class EventAdapter(private val events: List<Event>) : RecyclerView.Adapter<Event
     class EventViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val typeTextView: TextView = view.findViewById(R.id.textViewEventType)
         val dateTextView: TextView = view.findViewById(R.id.textViewEventDate)
+        val timeTextView: TextView = view.findViewById(R.id.textViewTime)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
@@ -27,17 +28,18 @@ class EventAdapter(private val events: List<Event>) : RecyclerView.Adapter<Event
         val event = events[position]
         holder.typeTextView.text = event.type
         holder.dateTextView.text = event.date
+        holder.timeTextView.text= event.time
 
         holder.itemView.setOnClickListener {
             onEditClick(event)
         }
 
         holder.itemView.setOnCreateContextMenuListener { menu, _, _ ->
-            menu.add("Editar").setOnMenuItemClickListener {
+            menu.add("Edit").setOnMenuItemClickListener {
                 onEditClick(event)
                 true
             }
-            menu.add("Remover").setOnMenuItemClickListener {
+            menu.add("Delete").setOnMenuItemClickListener {
                 onRemoveClick(event)
                 true
             }
