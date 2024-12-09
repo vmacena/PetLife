@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.macena.petlife.database.SQLiteHelper
 
 class MainActivity : AppCompatActivity() {
@@ -12,6 +13,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recyclerViewPets: RecyclerView
     private lateinit var adapter: PetAdapter
     private lateinit var dbHelper: SQLiteHelper
+
+    private val addPetLauncher = registerForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            reloadPets()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,10 +31,10 @@ class MainActivity : AppCompatActivity() {
         recyclerViewPets = findViewById(R.id.recyclerViewPets)
         recyclerViewPets.layoutManager = LinearLayoutManager(this)
 
-        if (dbHelper.getPets().isEmpty()) {
-            dbHelper.insertPet("Ted", "Dog")
-            dbHelper.insertPet("Cheddar", "Dog")
-            dbHelper.insertPet("Bacon", "Dog")
+        val fabAddPet = findViewById<FloatingActionButton>(R.id.fabAddPet)
+        fabAddPet.setOnClickListener {
+            val intent = Intent(this, EditPetActivity::class.java)
+            addPetLauncher.launch(intent)
         }
 
         reloadPets()
@@ -38,7 +47,7 @@ class MainActivity : AppCompatActivity() {
         adapter.onEditClick = { pet ->
             val intent = Intent(this, EditPetActivity::class.java)
             intent.putExtra("PET_ID", pet.id)
-            startActivity(intent)
+            addPetLauncher.launch(intent)
         }
 
         adapter.onRemoveClick = { pet ->
@@ -47,12 +56,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         adapter.onViewEventsClick = { pet ->
-            //android.util.Log.d("MainActivity", "Abrindo eventos para PET_ID: ${pet.id}")
             val intent = Intent(this, PetEventsActivity::class.java)
             intent.putExtra("PET_ID", pet.id)
             startActivity(intent)
         }
-
 
         recyclerViewPets.adapter = adapter
     }
