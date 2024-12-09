@@ -26,6 +26,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.title = "PetLife - List of Pets"
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+
         dbHelper = SQLiteHelper(this)
 
         recyclerViewPets = findViewById(R.id.recyclerViewPets)
