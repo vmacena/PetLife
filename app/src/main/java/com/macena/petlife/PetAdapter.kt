@@ -6,7 +6,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-data class Pet(val id: Int, val name: String, val type: String)
+data class Pet(
+    val id: Int,
+    val name: String,
+    val type: String,
+    val birthDate: String,
+    val color: String,
+    val size: String
+)
 
 class PetAdapter(private val pets: List<Pet>) : RecyclerView.Adapter<PetAdapter.PetViewHolder>() {
 
@@ -30,16 +37,16 @@ class PetAdapter(private val pets: List<Pet>) : RecyclerView.Adapter<PetAdapter.
         holder.typeTextView.text = pet.type
 
         holder.itemView.setOnCreateContextMenuListener { menu, _, _ ->
-            menu.setHeaderTitle("Opções para ${pet.name}")
-            menu.add("Editar").setOnMenuItemClickListener {
+            menu.setHeaderTitle("Options for ${pet.name}")
+            menu.add("Edit").setOnMenuItemClickListener {
                 onEditClick(pet)
                 true
             }
-            menu.add("Remover").setOnMenuItemClickListener {
+            menu.add("Remove").setOnMenuItemClickListener {
                 onRemoveClick(pet)
                 true
             }
-            menu.add("Visualizar Eventos").setOnMenuItemClickListener {
+            menu.add("View Events").setOnMenuItemClickListener {
                 onViewEventsClick(pet)
                 true
             }

@@ -17,31 +17,35 @@ class SQLiteHelper(context: Context) : SQLiteOpenHelper(
 
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS events")
-        db.execSQL("DROP TABLE IF EXISTS pets")
-        onCreate(db)
+        if (oldVersion < 3) {
+            db.execSQL("ALTER TABLE pets ADD COLUMN birth_date TEXT NOT NULL DEFAULT ''")
+            db.execSQL("ALTER TABLE pets ADD COLUMN color TEXT NOT NULL DEFAULT ''")
+            db.execSQL("ALTER TABLE pets ADD COLUMN size TEXT NOT NULL DEFAULT ''")
+        }
     }
-
 
     fun getPets(): List<Pet> {
         val pets = mutableListOf<Pet>()
         val db = readableDatabase
         val cursor = db.query(
-            TABLE_PETS,
-            arrayOf(COLUMN_ID, COLUMN_NAME, COLUMN_TYPE),
+            "pets",
+            arrayOf("id", "name", "type", "birth_date", "color", "size"),
             null,
             null,
             null,
             null,
-            "$COLUMN_NAME ASC"
+            "name ASC"
         )
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                val id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID))
-                val name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME))
-                val type = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TYPE))
-                pets.add(Pet(id, name, type))
+                val id = cursor.getInt(cursor.getColumnIndexOrThrow("id"))
+                val name = cursor.getString(cursor.getColumnIndexOrThrow("name"))
+                val type = cursor.getString(cursor.getColumnIndexOrThrow("type"))
+                val birthDate = cursor.getString(cursor.getColumnIndexOrThrow("birth_date"))
+                val color = cursor.getString(cursor.getColumnIndexOrThrow("color"))
+                val size = cursor.getString(cursor.getColumnIndexOrThrow("size"))
+                pets.add(Pet(id, name, type, birthDate, color, size))
             }
             cursor.close()
         }
@@ -50,16 +54,21 @@ class SQLiteHelper(context: Context) : SQLiteOpenHelper(
         return pets
     }
 
-    fun insertPet(name: String, type: String): Long {
+
+    fun insertPet(name: String, type: String, birthDate: String, color: String, size: String): Long {
         val db = writableDatabase
         val values = ContentValues().apply {
-            put(COLUMN_NAME, name)
-            put(COLUMN_TYPE, type)
+            put("name", name)
+            put("type", type)
+            put("birth_date", birthDate)
+            put("color", color)
+            put("size", size)
         }
-        val id = db.insert(TABLE_PETS, null, values)
+        val id = db.insert("pets", null, values)
         db.close()
         return id
     }
+
 
     fun deletePet(id: Int) {
         val db = writableDatabase
@@ -70,9 +79,9 @@ class SQLiteHelper(context: Context) : SQLiteOpenHelper(
     fun getPetById(id: Int): Pet? {
         val db = readableDatabase
         val cursor = db.query(
-            TABLE_PETS,
-            arrayOf(COLUMN_ID, COLUMN_NAME, COLUMN_TYPE),
-            "$COLUMN_ID = ?",
+            "pets",
+            arrayOf("id", "name", "type", "birth_date", "color", "size"),
+            "id = ?",
             arrayOf(id.toString()),
             null,
             null,
@@ -80,27 +89,32 @@ class SQLiteHelper(context: Context) : SQLiteOpenHelper(
         )
         var pet: Pet? = null
         if (cursor != null && cursor.moveToFirst()) {
-            val name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME))
-            val type = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TYPE))
-            pet = Pet(id, name, type)
+            val name = cursor.getString(cursor.getColumnIndexOrThrow("name"))
+            val type = cursor.getString(cursor.getColumnIndexOrThrow("type"))
+            val birthDate = cursor.getString(cursor.getColumnIndexOrThrow("birth_date"))
+            val color = cursor.getString(cursor.getColumnIndexOrThrow("color"))
+            val size = cursor.getString(cursor.getColumnIndexOrThrow("size"))
+            pet = Pet(id, name, type, birthDate, color, size)
             cursor.close()
         }
         db.close()
         return pet
     }
 
-    fun updatePet(id: Int, name: String, type: String): Int {
+    fun updatePet(id: Int, name: String, type: String, birthDate: String, color: String, size: String): Int {
         val db = writableDatabase
         val values = ContentValues().apply {
-            put(COLUMN_NAME, name)
-            put(COLUMN_TYPE, type)
+            put("name", name)
+            put("type", type)
+            put("birth_date", birthDate)
+            put("color", color)
+            put("size", size)
         }
-        val rows = db.update(
-            TABLE_PETS, values,
-            "$COLUMN_ID = ?", arrayOf(id.toString()))
+        val rows = db.update("pets", values, "id = ?", arrayOf(id.toString()))
         db.close()
         return rows
     }
+
 
     fun getEventsByPetId(petId: Int): List<Event> {
         val events = mutableListOf<Event>()
@@ -184,7 +198,7 @@ class SQLiteHelper(context: Context) : SQLiteOpenHelper(
 
     companion object {
         private const val DATABASE_NAME = "PetLife.db"
-        private const val DATABASE_VERSION = 2
+        private const val DATABASE_VERSION = 3
 
         const val TABLE_PETS = "pets"
         const val COLUMN_ID = "id"
@@ -192,12 +206,16 @@ class SQLiteHelper(context: Context) : SQLiteOpenHelper(
         const val COLUMN_TYPE = "type"
 
         private const val CREATE_PETS_TABLE = """
-            CREATE TABLE $TABLE_PETS (
-                $COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                $COLUMN_NAME TEXT NOT NULL,
-                $COLUMN_TYPE TEXT NOT NULL
-            )
-        """
+        CREATE TABLE pets (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        type TEXT NOT NULL,
+        birth_date TEXT NOT NULL,
+        color TEXT NOT NULL,
+        size TEXT NOT NULL
+        )
+"""
+
 
         private const val CREATE_EVENTS_TABLE = """
     CREATE TABLE events (
