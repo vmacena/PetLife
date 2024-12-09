@@ -2,6 +2,9 @@ package com.macena.petlife
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.ContextMenu
+import android.view.MenuItem
+import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
@@ -31,6 +34,8 @@ class PetEventsActivity : AppCompatActivity() {
         listViewEvents = findViewById(R.id.listViewEvents)
         fabAddEvent = findViewById(R.id.fabAddEvent)
 
+        registerForContextMenu(listViewEvents)
+
         fabAddEvent.setOnClickListener {
             val intent = Intent(this, EditEventActivity::class.java)
             intent.putExtra("PET_ID", petId)
@@ -38,21 +43,6 @@ class PetEventsActivity : AppCompatActivity() {
         }
 
         reloadEvents()
-
-        listViewEvents.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
-            val event = events[position]
-            val intent = Intent(this, EditEventActivity::class.java)
-            intent.putExtra("EVENT_ID", event.id)
-            intent.putExtra("PET_ID", petId)
-            startActivity(intent)
-        }
-
-        listViewEvents.setOnItemLongClickListener { _, _, position, _ ->
-            val event = events[position]
-            dbHelper.deleteEvent(event.id)
-            reloadEvents()
-            true
-        }
     }
 
     private fun reloadEvents() {
@@ -70,5 +60,38 @@ class PetEventsActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         finish()
         return true
+    }
+
+    override fun onCreateContextMenu(
+        menu: ContextMenu?,
+        v: View?,
+        menuInfo: ContextMenu.ContextMenuInfo?
+    ) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        if (v?.id == R.id.listViewEvents) {
+            menu?.add(0, 1, 0, "Editar")
+            menu?.add(0, 2, 1, "Excluir")
+        }
+    }
+
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        val info = item.menuInfo as AdapterView.AdapterContextMenuInfo
+        val event = events[info.position]
+
+        return when (item.itemId) {
+            1 -> {
+                val intent = Intent(this, EditEventActivity::class.java)
+                intent.putExtra("EVENT_ID", event.id)
+                intent.putExtra("PET_ID", petId)
+                startActivity(intent)
+                true
+            }
+            2 -> {
+                dbHelper.deleteEvent(event.id)
+                reloadEvents()
+                true
+            }
+            else -> super.onContextItemSelected(item)
+        }
     }
 }
